@@ -4,28 +4,34 @@ A Minecraft bot that runs on Render.
 
 It can:
 
-- Join your Minecraft server automatically.
+- Join Minecraft servers automatically.
 - Reconnect if it gets disconnected.
 - Respawn when it dies.
 - Keep walking.
-- Run 24/7 while the Render service is running.
+- Keep running while the Render service is running.
 
-## How to set it up
+## Setup
 
-### 1. Open Render
+### 1. Fork this repository
 
-Go to Render and create a **Web Service**.
+If this is someone else's ABS repository, click **Fork** on GitHub and make a copy in your own GitHub account.
 
-Choose your **ABS GitHub repository**.
+If the repository is already yours, you can skip this step.
 
-### 2. Set the build and start commands
+### 2. Create a Render Web Service
 
-Use:
+Go to Render and:
 
-- **Build Command:** `npm install`
-- **Start Command:** `npm start`
+1. Click **New +**
+2. Choose **Web Service**
+3. Select your GitHub repository
+4. Give the service a name
+5. Keep the build command as:
+   `npm install`
+6. Keep the start command as:
+   `npm start`
 
-### 3. Add the environment variables
+### 3. Configure the environment variables
 
 In Render, open **Environment Variables** and add these:
 
@@ -39,42 +45,30 @@ In Render, open **Environment Variables** and add these:
 | `RECONNECT_MS` | No | `5000` |
 | `WALK_INTERVAL_MS` | No | `1000` |
 
-**Most people only need to set:**
+For a basic setup, you mainly need:
 
-- `MC_HOST` = your server IP
-- `MC_PORT` = your server port
+- `MC_HOST` = your Minecraft server IP
+- `MC_PORT` = your Minecraft server port
 - `MC_USERNAME` = the bot's Minecraft username
 
-### 4. Deploy
+### 4. Deploy it
 
-Click **Create Web Service** / **Deploy**.
+Click **Create Web Service**.
 
 Render will install the bot and start it.
 
-### 5. Check the logs
-
-Open the **Logs** tab in Render.
-
-You should see messages showing the bot connecting and spawning.
+Once it is running, open **Logs** in Render to see whether the bot connected.
 
 ## Microsoft accounts
 
-If your server requires a Microsoft account, set:
+If the server requires Microsoft authentication, set:
 
 `MC_AUTH=microsoft`
 
 Do not put passwords or private tokens in GitHub.
 
-## Health check
-
-The bot has a health page at:
-
-`/health`
-
-Render can use this to check that the web service is running.
-
 ## Important
 
-The bot will keep trying to reconnect while the Render service is running, but no bot can guarantee staying connected if the Minecraft server blocks, kicks, bans, or refuses it.
+The bot will keep trying to reconnect while the Render service is running, but the Minecraft server can still block, kick, ban, or refuse the bot.
 
-Only use the bot on Minecraft servers that allow automated bots.
+Only use the bot on servers that allow automated bots.

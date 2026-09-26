@@ -1,6 +1,6 @@
 # ABS
 
-A Minecraft bot that runs on Render.
+**ABS (Azures Bot Service)** is a Minecraft bot that runs on Render.
 
 It can:
 
@@ -59,6 +59,16 @@ Render will install the bot and start it.
 
 Once it is running, open **Logs** in Render to see whether the bot connected.
 
+## Using ABS in your own project
+
+ABS is licensed under the **Apache License 2.0**.
+
+You can use, modify, and deploy ABS in your own projects and services, including your own hosted service, as long as you follow the license and branding rules.
+
+You must not present your version as the official ABS service, claim that you created the original ABS project, or use ABS branding in a way that implies official affiliation with AzureMC-projects.
+
+See [TRADEMARKS.md](TRADEMARKS.md) for the branding rules.
+
 ## Microsoft accounts
 
 If the server requires Microsoft authentication, set:
@@ -72,3 +82,9 @@ Do not put passwords or private tokens in GitHub.
 The bot will keep trying to reconnect while the Render service is running, but the Minecraft server can still block, kick, ban, or refuse the bot.
 
 Only use the bot on servers that allow automated bots.
+
+## License
+
+ABS is licensed under the [Apache License 2.0](LICENSE).
+
+Copyright 2026 AzureMC-projects.

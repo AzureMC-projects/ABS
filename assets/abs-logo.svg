@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title>ABS logo</title>
+<desc>Minimal block-style ABS logo for Azures Bot Service</desc>
+<rect width="512" height="512" rx="96" fill="#111827"/>
+<rect x="72" y="72" width="368" height="368" rx="64" fill="#2563eb"/>
+<path d="M122 338 168 174h58l46 164h-45l-8-34h-46l-8 34h-43Zm61-69h28l-14-59-14 59Zm98 69V174h74c43 0 65 18 65 49 0 18-9 31-27 39 22 7 33 22 33 43 0 35-24 53-70 53h-75Zm43-98h27c16 0 24-5 24-16s-8-16-24-16h-27v32Zm0 62h32c18 0 27-6 27-18s-9-18-27-18h-32v36Z" fill="#fff"/>
+<rect x="91" y="91" width="24" height="24" rx="5" fill="#93c5fd"/>
+</svg>

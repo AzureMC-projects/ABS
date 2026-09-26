@@ -2,17 +2,24 @@
   "name": "abs-minecraft-bot",
   "version": "1.0.0",
   "private": true,
-  "description": "A Render-hosted Minecraft bot with auto-reconnect, respawn, and walking.",
+  "description": "Azures Bot Service: a Render-hosted Minecraft bot with auto-reconnect, auto-respawn, and continuous walking.",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "check": "node --check src/index.js"
   },
   "engines": {
     "node": ">=20"
   },
+  "keywords": [
+    "minecraft",
+    "minecraft-bot",
+    "mineflayer",
+    "render"
+  ],
+  "license": "Apache-2.0",
   "dependencies": {
     "express": "^5.1.0",
-    "mineflayer": "^4.31.0",
-    "mineflayer-pathfinder": "^2.4.5"
+    "mineflayer": "^4.31.0"
   }
 }

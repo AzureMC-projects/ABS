@@ -16,6 +16,10 @@
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20-339933.svg" alt="Node.js 20+"></a>
 </p>
 
+> 🔗 **Based on ABS?**  
+> This project is **Azures Bot Service (ABS)** by AzureMC-projects. If you are using a fork or derivative, please keep attribution to the original project.  
+> **Original repository:** https://github.com/AzureMC-projects/ABS
+
 **ABS (Azures Bot Service)** automatically connects to a Minecraft server, reconnects after disconnects, requests respawn after death, and continuously walks while the service is running.
 
 ---

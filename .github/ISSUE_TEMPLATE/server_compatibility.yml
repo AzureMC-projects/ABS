@@ -1,0 +1,42 @@
+name: Server compatibility
+description: Report a compatibility problem with a Minecraft server or server software.
+title: "[Compatibility]: "
+labels: ["compatibility"]
+body:
+  - type: input
+    id: server
+    attributes:
+      label: Server address
+      description: Do not include private server addresses if they should not be public.
+      placeholder: "play.example.net"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Minecraft version
+      placeholder: "1.21.4"
+    validations:
+      required: true
+  - type: input
+    id: software
+    attributes:
+      label: Server software
+      placeholder: "Paper"
+    validations:
+      required: false
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happens?
+      description: Describe the connection, kick, error, or behavior you observed.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove credentials, tokens, private IPs, and other sensitive information.
+      render: text
+    validations:
+      required: false

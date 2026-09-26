@@ -6,9 +6,17 @@
 
 <p align="center"><strong>Azures Bot Service</strong></p>
 
-**ABS (Azures Bot Service)** is a lightweight Minecraft bot designed to run continuously as a Render Web Service.
+<p align="center">
+  A lightweight Minecraft bot for continuous operation on Render.
+</p>
 
-It automatically connects to a Minecraft server, reconnects after disconnects, respawns, and continuously walks while the service is running.
+<p align="center">
+  <a href="https://github.com/AzureMC-projects/ABS/actions"><img src="https://github.com/AzureMC-projects/ABS/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/AzureMC-projects/ABS/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache 2.0"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20-339933.svg" alt="Node.js 20+"></a>
+</p>
+
+**ABS (Azures Bot Service)** automatically connects to a Minecraft server, reconnects after disconnects, requests respawn after death, and continuously walks while the service is running.
 
 ---
 
@@ -16,10 +24,13 @@ It automatically connects to a Minecraft server, reconnects after disconnects, r
 
 - 🤖 Automatic Minecraft server connection
 - 🔄 Automatic reconnection after disconnects
-- ♻️ Automatic respawning
-- 🚶 Continuous walking
+- ♻️ Automatic respawn handling
+- 🚶 Continuous walking with occasional jumping
 - ☁️ Designed for Render Web Services
-- ⚙️ Simple environment-variable configuration
+- ❤️ Health endpoint for service monitoring
+- 📊 JSON status endpoint with uptime and reconnect count
+- ⚙️ Environment-variable configuration
+- 🛡️ GitHub Actions validation and Dependabot updates
 
 ---
 
@@ -60,17 +71,17 @@ npm start
 
 In your Render service, open **Environment Variables** and add the following:
 
-| Variable | Required | Example | Description |
+| Variable | Required | Default | Description |
 |---|:---:|---|---|
-| `MC_HOST` | **Yes** | `play.example.net` | Minecraft server address |
+| `MC_HOST` | **Yes** | — | Minecraft server address |
 | `MC_PORT` | No | `25565` | Minecraft server port |
-| `MC_USERNAME` | **Yes** | `ABS_Bot` | Minecraft bot username |
+| `MC_USERNAME` | **Yes** | — | Minecraft bot username |
 | `MC_AUTH` | No | `offline` | Authentication mode |
-| `MC_VERSION` | No | `1.21.4` | Minecraft version |
+| `MC_VERSION` | No | auto | Minecraft version |
 | `RECONNECT_MS` | No | `5000` | Reconnect delay in milliseconds |
 | `WALK_INTERVAL_MS` | No | `1000` | Walking interval in milliseconds |
 
-For a basic setup, the main variables you need are:
+For a basic setup:
 
 ```text
 MC_HOST=your-server-ip
@@ -88,17 +99,44 @@ Once the service is running, open the **Logs** section in Render to check the bo
 
 ---
 
+## Monitoring
+
+ABS exposes two simple HTTP endpoints:
+
+- `/` — JSON service information, connection status, server, uptime, and reconnect count.
+- `/health` — lightweight health response suitable for monitoring.
+
+Example:
+
+```text
+GET /health
+```
+
+---
+
 ## How ABS works
 
 Once started, ABS will:
 
-1. Connect to the configured Minecraft server.
-2. Start walking after joining.
-3. Respawn when the bot dies.
-4. Reconnect if the connection is lost.
-5. Continue operating while the Render service is running.
+1. Validate the required configuration.
+2. Connect to the configured Minecraft server.
+3. Start walking after joining.
+4. Request a respawn after death.
+5. Reconnect if the connection is lost.
+6. Continue operating while the Render service is running.
 
 ABS cannot prevent a Minecraft server from kicking, banning, blocking, or shutting down the bot.
+
+---
+
+## Documentation
+
+- [Configuration](docs/configuration.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+- [Trademark guidance](TRADEMARKS.md)
 
 ---
 
@@ -111,6 +149,23 @@ MC_AUTH=microsoft
 ```
 
 **Never put passwords, access tokens, or other private credentials in GitHub.**
+
+---
+
+## Development
+
+Install dependencies and run the syntax check:
+
+```bash
+npm install
+npm run check
+```
+
+Start the service locally:
+
+```bash
+MC_HOST=your-server-ip MC_USERNAME=your-bot-name npm start
+```
 
 ---
 
@@ -146,4 +201,3 @@ Copyright © 2026 AzureMC-projects.
 ABS is provided as-is. You are responsible for ensuring that your use of ABS complies with the rules of the Minecraft server, hosting provider, and any other services you use.
 
 Only use ABS on servers that permit automated bots.
-

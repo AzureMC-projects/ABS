@@ -1,0 +1,18 @@
+name: ABS-Skins
+version: 0.1.0-SNAPSHOT
+main: com.azuremc.abs.skins.AbsSkinsPlugin
+description: Server-side skin customization for the ABS Minecraft bot.
+author: AzureMC-projects
+website: https://github.com/AzureMC-projects/ABS
+api-version: '26.2'
+
+commands:
+  abs-skin:
+    description: Manage ABS bot skin settings.
+    usage: /abs-skin reload
+    permission: abs.skins.admin
+
+permissions:
+  abs.skins.admin:
+    description: Allows administration of ABS-Skins.
+    default: op

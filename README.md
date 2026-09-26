@@ -145,6 +145,19 @@ ABS cannot prevent a Minecraft server from kicking, banning, blocking, or shutti
 
 ## Documentation
 
+- [Documentation Catalog](DOCUMENTATION.md) — index of the repository's Markdown documentation
+- [Configuration](docs/configuration.md)
+- [Deployment](docs/deployment.md)
+- [Docker](docs/docker.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [Compatibility](docs/compatibility.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Changelog](CHANGELOG.md)
+- [Roadmap](ROADMAP.md)
+- [Trademark guidance](TRADEMARKS.md)
+
 - [Configuration](docs/configuration.md)
 - [Troubleshooting](docs/troubleshooting.md)
 - [Contributing](CONTRIBUTING.md)

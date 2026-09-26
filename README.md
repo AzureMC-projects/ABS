@@ -171,6 +171,8 @@ MC_HOST=your-server-ip MC_USERNAME=your-bot-name npm start
 
 ## Using ABS in your own projects
 
+ABS is primarily developed and tested for **Paper 26.3**. Other Minecraft server software or versions may work, but are not the primary compatibility target.
+
 ABS is licensed under the **Apache License 2.0**.
 
 You may use, modify, and deploy ABS in your own projects and services, including commercial or hosted services, provided you comply with the license.
@@ -201,3 +203,20 @@ Copyright © 2026 AzureMC-projects.
 ABS is provided as-is. You are responsible for ensuring that your use of ABS complies with the rules of the Minecraft server, hosting provider, and any other services you use.
 
 Only use ABS on servers that permit automated bots.
+
+
+## Compatibility
+
+ABS is primarily developed and tested for **Paper 26.3**. See the [compatibility guide](docs/compatibility.md) for the current support target and reporting guidance.
+
+## Local configuration
+
+For local development, start from [`.env.example`](.env.example) and never commit real credentials.
+
+## Docker
+
+ABS includes a production Dockerfile. See [`docs/docker.md`](docs/docker.md) for build and run instructions.
+
+## Roadmap
+
+See [`ROADMAP.md`](ROADMAP.md) for planned improvements.

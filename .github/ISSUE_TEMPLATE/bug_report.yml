@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a reproducible problem with ABS.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected to happen.
+    validations:
+      required: true
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft version
+      placeholder: "1.21.4"
+    validations:
+      required: false
+  - type: input
+    id: server-version
+    attributes:
+      label: Server software/version
+      placeholder: "Paper 1.21.4"
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove usernames, tokens, IPs, and other private information.
+      render: text
+    validations:
+      required: false

@@ -9,6 +9,8 @@ let reconnectTimer = null;
 let walkTimer = null;
 let connected = false;
 let stopping = false;
+let reconnectCount = 0;
+const startedAt = Date.now();
 
 const config = {
   host: process.env.MC_HOST,
@@ -20,11 +22,20 @@ const config = {
   walkIntervalMs: Number(process.env.WALK_INTERVAL_MS || 1000)
 };
 
+function uptimeSeconds() {
+  return Math.floor((Date.now() - startedAt) / 1000);
+}
+
 app.get("/", (_req, res) => {
   res.json({
     service: "ABS Minecraft Bot",
-    status: connected ? "connected" : "connecting",
-    minecraftServer: config.host || "not configured"
+    name: "Azures Bot Service",
+    status: connected ? "connected" : stopping ? "stopping" : "connecting",
+    minecraftServer: config.host || "not configured",
+    minecraftPort: config.port,
+    bot: bot?.username || config.username || null,
+    uptimeSeconds: uptimeSeconds(),
+    reconnects: reconnectCount
   });
 });
 
@@ -42,9 +53,23 @@ app.listen(PORT, () => {
 
 function validateConfig() {
   const missing = ["MC_HOST", "MC_USERNAME"].filter((key) => !process.env[key]);
+
   if (missing.length) {
     console.error(`Missing environment variables: ${missing.join(", ")}`);
     process.exit(1);
+  }
+
+  const numericConfig = [
+    ["MC_PORT", config.port],
+    ["RECONNECT_MS", config.reconnectMs],
+    ["WALK_INTERVAL_MS", config.walkIntervalMs]
+  ];
+
+  for (const [name, value] of numericConfig) {
+    if (!Number.isFinite(value) || value <= 0) {
+      console.error(`${name} must be a positive number.`);
+      process.exit(1);
+    }
   }
 }
 
@@ -53,25 +78,31 @@ function clearMovement() {
     clearInterval(walkTimer);
     walkTimer = null;
   }
+
   if (bot) {
     for (const control of ["forward", "back", "left", "right", "jump", "sprint"]) {
-      bot.setControlState(control, false);
+      try {
+        bot.setControlState(control, false);
+      } catch (_) {}
     }
   }
 }
 
 function startWalking() {
   clearMovement();
-  walkTimer = setInterval(() => {
-    if (!bot || !bot.entity || !connected) return;
 
-    // Keep moving forward. Jump occasionally so the bot can get past
-    // small obstacles instead of remaining completely stationary.
+  walkTimer = setInterval(() => {
+    if (!bot || !bot.entity || !connected || stopping) return;
+
     bot.setControlState("forward", true);
 
     if (Math.random() < 0.12) {
       bot.setControlState("jump", true);
-      setTimeout(() => bot?.setControlState("jump", false), 250);
+      setTimeout(() => {
+        try {
+          bot?.setControlState("jump", false);
+        } catch (_) {}
+      }, 250);
     }
   }, config.walkIntervalMs);
 }
@@ -81,6 +112,7 @@ function scheduleReconnect(reason) {
 
   connected = false;
   clearMovement();
+  reconnectCount += 1;
 
   console.log(`Disconnected: ${reason || "unknown reason"}`);
   console.log(`Reconnecting in ${config.reconnectMs} ms...`);
@@ -98,7 +130,10 @@ function connect() {
   connected = false;
 
   if (bot) {
-    try { bot.quit("reconnecting"); } catch (_) {}
+    try {
+      bot.removeAllListeners();
+      bot.quit("reconnecting");
+    } catch (_) {}
     bot = null;
   }
 
@@ -119,10 +154,25 @@ function connect() {
   });
 
   bot.on("death", () => {
-    console.log("Bot died; waiting for respawn...");
+    connected = false;
+    clearMovement();
+    console.log("Bot died; requesting respawn...");
+
+    setTimeout(() => {
+      if (!stopping && bot?.health === 0) {
+        try {
+          bot.respawn();
+        } catch (err) {
+          console.error("Respawn request failed:", err.message);
+        }
+      }
+    }, 1000);
   });
 
   bot.on("respawn", () => {
+    if (stopping) return;
+
+    connected = true;
     console.log("Bot respawned.");
     startWalking();
   });
@@ -138,25 +188,33 @@ function connect() {
   });
 
   bot.on("end", (reason) => {
-    scheduleReconnect(reason);
+    scheduleReconnect(reason || "connection ended");
   });
 }
 
-process.on("SIGTERM", () => {
-  stopping = true;
-  clearMovement();
-  if (reconnectTimer) clearTimeout(reconnectTimer);
-  try { bot?.quit("service stopping"); } catch (_) {}
-  process.exit(0);
-});
+function shutdown(signal) {
+  if (stopping) return;
 
-process.on("SIGINT", () => {
   stopping = true;
+  connected = false;
   clearMovement();
-  if (reconnectTimer) clearTimeout(reconnectTimer);
-  try { bot?.quit("service stopping"); } catch (_) {}
+
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+
+  console.log(`Received ${signal}; shutting down ABS.`);
+
+  try {
+    bot?.quit("service stopping");
+  } catch (_) {}
+
   process.exit(0);
-});
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
 
 validateConfig();
 connect();

@@ -22,6 +22,12 @@ const config = {
   walkIntervalMs: Number(process.env.WALK_INTERVAL_MS || 1000)
 };
 
+function log(message, ...args) {
+  const timestamp = new Date().toISOString();
+  console.log(`[ABS] [${timestamp}] ${message}`, ...args);
+  lastEvent = message;
+}
+
 function uptimeSeconds() {
   return Math.floor((Date.now() - startedAt) / 1000);
 }
@@ -37,6 +43,10 @@ app.get("/", (_req, res) => {
     uptimeSeconds: uptimeSeconds(),
     reconnects: reconnectCount
   });
+});
+
+app.get("/api/status", (_req, res) => {
+  res.json(getStatus());
 });
 
 app.get("/health", (_req, res) => {

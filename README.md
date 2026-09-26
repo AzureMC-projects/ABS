@@ -1,5 +1,11 @@
 # ABS
 
+<p align="center">
+  <img src="assets/abs-logo.svg" alt="ABS logo" width="180">
+</p>
+
+<p align="center"><strong>Azures Bot Service</strong></p>
+
 **ABS (Azures Bot Service)** is a lightweight Minecraft bot designed to run continuously as a Render Web Service.
 
 It automatically connects to a Minecraft server, reconnects after disconnects, respawns, and continuously walks while the service is running.

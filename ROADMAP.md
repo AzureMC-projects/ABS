@@ -27,5 +27,8 @@ ABS is primarily developed and tested for **Paper 26.3**. Other Minecraft server
 - [ ] Smarter reconnect backoff
 - [ ] Release automation
 - [ ] Optional plugin architecture
+- [ ] ABS Skin System — Paper plugin for server-side bot skins
+- [ ] ABS Control Panel — GitHub Pages interface for configuring skins and future bot settings
+- [ ] Connect the Control Panel, ABS API, and Paper plugin for remote configuration
 
 Roadmap items are plans, not guarantees. Compatibility reports and community contributions are welcome through GitHub Issues.

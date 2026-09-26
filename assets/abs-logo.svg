@@ -1,8 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-<title>ABS logo</title>
-<desc>Minimal block-style ABS logo for Azures Bot Service</desc>
-<rect width="512" height="512" rx="96" fill="#111827"/>
-<rect x="72" y="72" width="368" height="368" rx="64" fill="#2563eb"/>
-<path d="M122 338 168 174h58l46 164h-45l-8-34h-46l-8 34h-43Zm61-69h28l-14-59-14 59Zm98 69V174h74c43 0 65 18 65 49 0 18-9 31-27 39 22 7 33 22 33 43 0 35-24 53-70 53h-75Zm43-98h27c16 0 24-5 24-16s-8-16-24-16h-27v32Zm0 62h32c18 0 27-6 27-18s-9-18-27-18h-32v36Z" fill="#fff"/>
-<rect x="91" y="91" width="24" height="24" rx="5" fill="#93c5fd"/>
+  <title>ABS logo</title>
+  <desc>Modern voxel-inspired ABS logo for Azures Bot Service</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M96 128 256 72l160 56v184l-160 128L96 312Z" fill="url(#face)" opacity=".98"/>
+  <path d="M96 128 256 184l160-56" fill="none" stroke="#bfdbfe" stroke-width="10" stroke-linejoin="round" opacity=".55"/>
+  <path d="M256 184v256" stroke="#1d4ed8" stroke-width="10" opacity=".65"/>
+  <path d="M96 128v184l160 128" fill="none" stroke="#93c5fd" stroke-width="10" opacity=".35"/>
+  <path d="M416 128v184L256 440" fill="none" stroke="#172554" stroke-width="10" opacity=".45"/>
+
+  <path d="M142 337 183 190h53l41 147h-43l-7-30h-35l-7 30h-43Zm59-70h19l-10-42-9 42Z" fill="#fff"/>
+  <path d="M292 190h67c39 0 59 16 59 45 0 16-8 28-24 35 19 7 29 20 29 39 0 31-22 47-63 47h-68V190Zm42 57h23c14 0 21-5 21-15 0-9-7-14-21-14h-23v29Zm0 57h29c15 0 23-5 23-16 0-11-8-16-23-16h-29v32Z" fill="#fff"/>
+
+  <path d="M112 112h42" stroke="#bfdbfe" stroke-width="12" stroke-linecap="round"/>
+  <path d="M112 112v42" stroke="#bfdbfe" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="398" cy="398" r="12" fill="#bfdbfe"/>
 </svg>

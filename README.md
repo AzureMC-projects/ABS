@@ -129,6 +129,16 @@ ABS cannot prevent a Minecraft server from kicking, banning, blocking, or shutti
 
 ---
 
+## Forks and attribution
+
+> **Forked ABS? Keep the source visible.**
+>
+> This project is an original **AzureMC-projects / ABS (Azures Bot Service)** project. If you fork, mirror, or build on ABS, please keep this attribution and link to the original repository:
+>
+> **Original ABS repository:** https://github.com/AzureMC-projects/ABS
+>
+> You are welcome to customize and deploy your fork under the Apache License 2.0. Keeping this notice helps users discover the original project and understand where the code came from.
+
 ## Documentation
 
 - [Configuration](docs/configuration.md)

@@ -11,9 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/AzureMC-projects/ABS/actions"><img src="https://github.com/AzureMC-projects/ABS/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://github.com/AzureMC-projects/ABS/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache 2.0"></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D20-339933.svg" alt="Node.js 20+"></a>
 </p>
 
 > 🔗 **Based on ABS?**  
@@ -21,6 +19,14 @@
 > **Original repository:** https://github.com/AzureMC-projects/ABS
 
 **ABS (Azures Bot Service)** automatically connects to a Minecraft server, reconnects after disconnects, requests respawn after death, and continuously walks while the service is running.
+
+---
+
+## Community
+
+Join the ABS Discord server for support, updates, and discussion:
+
+**Discord:** https://discord.gg/wFVYwzAEe3
 
 ---
 
@@ -34,7 +40,6 @@
 - ❤️ Health endpoint for service monitoring
 - 📊 JSON status endpoint with uptime and reconnect count
 - ⚙️ Environment-variable configuration
-- 🛡️ GitHub Actions validation and Dependabot updates
 
 ---
 
@@ -168,7 +173,6 @@ ABS cannot prevent a Minecraft server from kicking, banning, blocking, or shutti
 - [Roadmap](ROADMAP.md)
 - [Trademark guidance](TRADEMARKS.md)
 
-
 ---
 
 ## Microsoft authentication
@@ -237,7 +241,6 @@ Copyright © 2026 AzureMC-projects.
 ABS is provided as-is. You are responsible for ensuring that your use of ABS complies with the rules of the Minecraft server, hosting provider, and any other services you use.
 
 Only use ABS on servers that permit automated bots.
-
 
 ## Compatibility
 

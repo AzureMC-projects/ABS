@@ -1,5 +1,6 @@
 const express = require("express");
 const mineflayer = require("mineflayer");
+const { createConfig, validateConfig } = require("./config");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -10,30 +11,35 @@ let walkTimer = null;
 let connected = false;
 let stopping = false;
 let reconnectCount = 0;
+let lastConnectedAt = null;
+let lastEvent = "starting";
 const startedAt = Date.now();
 
-const config = {
-  host: process.env.MC_HOST,
-  port: Number(process.env.MC_PORT || 25565),
-  username: process.env.MC_USERNAME,
-  auth: process.env.MC_AUTH || "offline",
-  version: process.env.MC_VERSION || false,
-  reconnectMs: Number(process.env.RECONNECT_MS || 5000),
-  walkIntervalMs: Number(process.env.WALK_INTERVAL_MS || 1000)
-};
+const config = createConfig();
 
-function log(message, ...args) {
-  const timestamp = new Date().toISOString();
-  console.log(`[ABS] [${timestamp}] ${message}`, ...args);
-  lastEvent = message;
+function log(level, event, details = {}) {
+  const entry = {
+    timestamp: new Date().toISOString(),
+    level,
+    event,
+    ...details
+  };
+
+  if (level === "error") {
+    console.error("[ABS]", JSON.stringify(entry));
+  } else {
+    console.log("[ABS]", JSON.stringify(entry));
+  }
+
+  lastEvent = event;
 }
 
 function uptimeSeconds() {
   return Math.floor((Date.now() - startedAt) / 1000);
 }
 
-app.get("/", (_req, res) => {
-  res.json({
+function getStatus() {
+  return {
     service: "ABS Minecraft Bot",
     name: "Azures Bot Service",
     status: connected ? "connected" : stopping ? "stopping" : "connecting",
@@ -41,8 +47,66 @@ app.get("/", (_req, res) => {
     minecraftPort: config.port,
     bot: bot?.username || config.username || null,
     uptimeSeconds: uptimeSeconds(),
-    reconnects: reconnectCount
-  });
+    reconnects: reconnectCount,
+    lastConnectedAt,
+    lastEvent
+  };
+}
+
+app.get("/", (_req, res) => {
+  res.type("html").send(`<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ABS Status</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b1220; color: #e8eefc; }
+    main { width: min(680px, calc(100% - 32px)); padding: 28px; border: 1px solid #263653; border-radius: 18px; background: #111b2d; box-shadow: 0 18px 50px #0006; }
+    h1 { margin: 0 0 4px; } p { color: #aebbd2; }
+    .status { display: inline-block; padding: 7px 11px; border-radius: 999px; background: #19345a; text-transform: capitalize; }
+    dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+    div { padding: 14px; border-radius: 12px; background: #0d1728; }
+    dt { color: #8fa2c2; font-size: 13px; } dd { margin: 5px 0 0; font-weight: 700; }
+    a { color: #79b7ff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ABS</h1>
+    <p>Azures Bot Service</p>
+    <span id="status" class="status">loading</span>
+    <dl>
+      <div><dt>Bot</dt><dd id="bot">—</dd></div>
+      <div><dt>Server</dt><dd id="server">—</dd></div>
+      <div><dt>Uptime</dt><dd id="uptime">—</dd></div>
+      <div><dt>Reconnects</dt><dd id="reconnects">—</dd></div>
+      <div><dt>Last connected</dt><dd id="connectedAt">—</dd></div>
+      <div><dt>Last event</dt><dd id="event">—</dd></div>
+    </dl>
+    <p><a href="/health">Health</a> · <a href="/api/status">JSON status</a></p>
+  </main>
+  <script>
+    async function refresh() {
+      try {
+        const data = await fetch("/api/status", { cache: "no-store" }).then((r) => r.json());
+        document.querySelector("#status").textContent = data.status;
+        document.querySelector("#bot").textContent = data.bot || "—";
+        document.querySelector("#server").textContent = data.minecraftServer + ":" + data.minecraftPort;
+        document.querySelector("#uptime").textContent = data.uptimeSeconds + "s";
+        document.querySelector("#reconnects").textContent = data.reconnects;
+        document.querySelector("#connectedAt").textContent = data.lastConnectedAt || "—";
+        document.querySelector("#event").textContent = data.lastEvent || "—";
+      } catch (error) {
+        document.querySelector("#status").textContent = "unavailable";
+      }
+    }
+    refresh();
+    setInterval(refresh, 5000);
+  </script>
+</body>
+</html>`);
 });
 
 app.get("/api/status", (_req, res) => {
@@ -58,30 +122,8 @@ app.get("/health", (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`ABS web service listening on port ${PORT}`);
+  log("info", "web_service_started", { port: PORT });
 });
-
-function validateConfig() {
-  const missing = ["MC_HOST", "MC_USERNAME"].filter((key) => !process.env[key]);
-
-  if (missing.length) {
-    console.error(`Missing environment variables: ${missing.join(", ")}`);
-    process.exit(1);
-  }
-
-  const numericConfig = [
-    ["MC_PORT", config.port],
-    ["RECONNECT_MS", config.reconnectMs],
-    ["WALK_INTERVAL_MS", config.walkIntervalMs]
-  ];
-
-  for (const [name, value] of numericConfig) {
-    if (!Number.isFinite(value) || value <= 0) {
-      console.error(`${name} must be a positive number.`);
-      process.exit(1);
-    }
-  }
-}
 
 function clearMovement() {
   if (walkTimer) {
@@ -124,8 +166,11 @@ function scheduleReconnect(reason) {
   clearMovement();
   reconnectCount += 1;
 
-  console.log(`Disconnected: ${reason || "unknown reason"}`);
-  console.log(`Reconnecting in ${config.reconnectMs} ms...`);
+  log("warn", "reconnect_scheduled", {
+    reason: reason || "unknown",
+    delayMs: config.reconnectMs,
+    reconnectCount
+  });
 
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
@@ -147,7 +192,11 @@ function connect() {
     bot = null;
   }
 
-  console.log(`Connecting to ${config.host}:${config.port} as ${config.username}...`);
+  log("info", "minecraft_connecting", {
+    host: config.host,
+    port: config.port,
+    username: config.username
+  });
 
   bot = mineflayer.createBot({
     host: config.host,
@@ -159,21 +208,23 @@ function connect() {
 
   bot.once("spawn", () => {
     connected = true;
-    console.log("Minecraft bot spawned.");
+    lastConnectedAt = new Date().toISOString();
+    log("info", "minecraft_spawned", { username: bot.username });
     startWalking();
   });
 
   bot.on("death", () => {
     connected = false;
     clearMovement();
-    console.log("Bot died; requesting respawn...");
+    log("warn", "bot_died");
 
     setTimeout(() => {
       if (!stopping && bot?.health === 0) {
         try {
           bot.respawn();
+          log("info", "respawn_requested");
         } catch (err) {
-          console.error("Respawn request failed:", err.message);
+          log("error", "respawn_failed", { message: err.message });
         }
       }
     }, 1000);
@@ -183,17 +234,18 @@ function connect() {
     if (stopping) return;
 
     connected = true;
-    console.log("Bot respawned.");
+    lastConnectedAt = new Date().toISOString();
+    log("info", "bot_respawned");
     startWalking();
   });
 
   bot.on("kicked", (reason) => {
-    console.log("Bot was kicked:", reason);
+    log("warn", "bot_kicked", { reason });
     scheduleReconnect("kicked");
   });
 
   bot.on("error", (err) => {
-    console.error("Minecraft error:", err.message);
+    log("error", "minecraft_error", { message: err.message });
     scheduleReconnect("error");
   });
 
@@ -214,7 +266,7 @@ function shutdown(signal) {
     reconnectTimer = null;
   }
 
-  console.log(`Received ${signal}; shutting down ABS.`);
+  log("info", "service_stopping", { signal });
 
   try {
     bot?.quit("service stopping");
@@ -226,5 +278,11 @@ function shutdown(signal) {
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
-validateConfig();
+const validation = validateConfig(config);
+
+if (!validation.valid) {
+  console.error(`[ABS] ${validation.error}`);
+  process.exit(1);
+}
+
 connect();

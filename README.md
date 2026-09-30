@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/AzureMC-projects/ABS/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache 2.0"></a>
-  <a href="https://discord.gg/wFVYwzAEe3"><img src="https://img.shields.io/discord/1554221908587708436?label=Discord&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://discord.gg/wFVYwzAEe3"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Finvites%2FwFVYwzAEe3%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&logo=discord&logoColor=white&label=Members" alt="Discord"></a>
 </p>
 
 > 🔗 **Based on ABS?**  

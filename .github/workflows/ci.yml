@@ -24,4 +24,13 @@ jobs:
         run: npm install
 
       - name: Check JavaScript syntax
-        run: node --check src/index.js
+        run: npm run check
+
+      - name: Run tests
+        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check

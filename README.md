@@ -153,6 +153,8 @@ ABS cannot prevent a Minecraft server from kicking, banning, blocking, or shutti
 
 ## Documentation
 
+For the ABS documentation website, use the **ABS Docs** badge at the top of this README.
+
 - [Documentation Catalog](DOCUMENTATION.md) — index of the repository's Markdown documentation
 - [Customization System](docs/customization.md) — planned skin system, Paper plugin, Control Panel, and security architecture
 - [Configuration](docs/configuration.md)

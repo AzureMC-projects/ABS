@@ -50,9 +50,17 @@ If you are setting up your own copy of ABS:
 
 If you already own the repository, you can skip this step.
 
-### 2. Create a Render Web Service
+### 2. One-click Render deployment
 
-Open Render and:
+Use the repository's Render blueprint to create the service from `render.yaml`:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/AzureMC-projects/ABS)
+
+After opening the deployment flow, review the service settings and add the required Minecraft environment variables.
+
+### 3. Create a Render Web Service
+
+If you prefer manual setup, open Render and:
 
 1. Click **New +**
 2. Select **Web Service**
@@ -71,7 +79,7 @@ npm install
 npm start
 ```
 
-### 3. Configure environment variables
+### 4. Configure environment variables
 
 In your Render service, open **Environment Variables** and add the following:
 
@@ -93,7 +101,7 @@ MC_PORT=25565
 MC_USERNAME=your-bot-name
 ```
 
-### 4. Deploy
+### 5. Deploy
 
 Click **Create Web Service** in Render.
 
@@ -107,7 +115,8 @@ Once the service is running, open the **Logs** section in Render to check the bo
 
 ABS exposes two simple HTTP endpoints:
 
-- `/` — JSON service information, connection status, server, uptime, and reconnect count.
+- `/` — live web status dashboard with connection status, server, uptime, reconnect count, and recent event.
+- `/api/status` — JSON service information for integrations and monitoring.
 - `/health` — lightweight health response suitable for monitoring.
 
 Example:
@@ -176,11 +185,14 @@ MC_AUTH=microsoft
 
 ## Development
 
-Install dependencies and run the syntax check:
+Install dependencies and run the validation suite:
 
 ```bash
 npm install
 npm run check
+npm test
+npm run lint
+npm run format:check
 ```
 
 Start the service locally:

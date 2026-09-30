@@ -12,6 +12,7 @@
 
 <p align="center">
   <a href="https://github.com/AzureMC-projects/ABS/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache 2.0"></a>
+  <a href="https://discord.gg/wFVYwzAEe3"><img src="https://img.shields.io/discord/123456789012345678?label=Discord&logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
 > 🔗 **Based on ABS?**  
@@ -19,14 +20,6 @@
 > **Original repository:** https://github.com/AzureMC-projects/ABS
 
 **ABS (Azures Bot Service)** automatically connects to a Minecraft server, reconnects after disconnects, requests respawn after death, and continuously walks while the service is running.
-
----
-
-## Community
-
-Join the ABS Discord server for support, updates, and discussion:
-
-**Discord:** https://discord.gg/wFVYwzAEe3
 
 ---
 

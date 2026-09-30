@@ -1,10 +1,10 @@
-name: Deploy ABS Control Panel
+name: Deploy ABS documentation
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "site/**"
+      - "docs/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -28,10 +28,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Upload Pages artifact
+      - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./site
-      - name: Deploy to GitHub Pages
+          path: "./docs"
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

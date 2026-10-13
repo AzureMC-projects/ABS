@@ -1,10 +1,13 @@
 const express = require("express");
+const crypto = require("node:crypto");
 const mineflayer = require("mineflayer");
 const { createConfig, validateConfig } = require("./config");
 const { calculateReconnectDelay, chooseMovement } = require("./reliability");
 const { loadPlugins } = require("./plugins");
+const { createRemoteConfigStore, validateRemoteConfig } = require("./remote-config");
 
 const app = express();
+app.use(express.json({ limit: "16kb" }));
 const PORT = Number(process.env.PORT || 3000);
 
 let bot = null;
@@ -19,6 +22,9 @@ let lastEvent = "starting";
 const startedAt = Date.now();
 
 const config = createConfig();
+const remoteConfigStore = createRemoteConfigStore();
+const controlToken = process.env.ABS_CONTROL_TOKEN || "";
+const allowedControlOrigin = process.env.ABS_CONTROL_ORIGIN || "https://azuremc-projects.github.io";
 const plugins = loadPlugins(config.pluginNames, (event, details = {}) => {
   console.log("[ABS plugin]", JSON.stringify({ event, ...details }));
 });
@@ -50,6 +56,70 @@ function log(level, event, details = {}) {
   }
 }
 
+
+function safeTokenEquals(candidate, expected) {
+  if (typeof candidate !== "string" || !expected) return false;
+  const left = Buffer.from(candidate);
+  const right = Buffer.from(expected);
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
+function controlCors(req, res, next) {
+  const origin = req.get("Origin");
+  if (origin && origin !== allowedControlOrigin) {
+    return res.status(403).json({ error: "Origin is not allowed." });
+  }
+  if (origin) {
+    res.set("Access-Control-Allow-Origin", allowedControlOrigin);
+    res.set("Vary", "Origin");
+    res.set("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    res.set("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
+  }
+  if (req.method === "OPTIONS") return res.status(204).end();
+  next();
+}
+
+function requireControlToken(req, res, next) {
+  if (controlToken.length < 32) {
+    return res.status(503).json({ error: "Remote configuration is disabled. Configure ABS_CONTROL_TOKEN with at least 32 characters." });
+  }
+  const authorization = req.get("Authorization") || "";
+  const match = authorization.match(/^Bearer (.+)$/i);
+  if (!match || !safeTokenEquals(match[1], controlToken)) {
+    return res.status(401).json({ error: "A valid Bearer token is required." });
+  }
+  next();
+}
+
+function applyRemoteBotSettings(remoteConfig) {
+  config.movementMode = remoteConfig.bot.movementMode;
+  config.jumpChance = remoteConfig.bot.jumpChance;
+  config.walkIntervalMs = remoteConfig.bot.walkIntervalMs;
+  if (connected && bot?.entity) startWalking();
+}
+
+app.options("/api/v1/config", controlCors);
+app.get("/api/v1/config", controlCors, requireControlToken, (_req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json(remoteConfigStore.get());
+});
+
+app.put("/api/v1/config", controlCors, requireControlToken, (req, res) => {
+  const candidate = req.body;
+  const validation = validateRemoteConfig(candidate);
+  if (!validation.valid) return res.status(400).json({ error: validation.error });
+
+  const result = remoteConfigStore.update(candidate);
+  if (!result.valid) return res.status(400).json({ error: result.error });
+  applyRemoteBotSettings(result.config);
+  log("info", "remote_config_updated", {
+    revision: result.config.revision,
+    movementMode: result.config.bot.movementMode
+  });
+  res.set("Cache-Control", "no-store");
+  res.json(result.config);
+});
+
 function uptimeSeconds() {
   return Math.floor((Date.now() - startedAt) / 1000);
 }
@@ -65,7 +135,8 @@ function getStatus() {
     uptimeSeconds: uptimeSeconds(),
     reconnects: reconnectCount,
     lastConnectedAt,
-    lastEvent
+    lastEvent,
+    remoteConfigEnabled: controlToken.length >= 32
   };
 }
 
@@ -139,6 +210,9 @@ app.get("/health", (_req, res) => {
 
 app.listen(PORT, () => {
   log("info", "web_service_started", { port: PORT });
+  if (controlToken.length < 32) {
+    log("warn", "remote_config_disabled", { reason: "ABS_CONTROL_TOKEN must contain at least 32 characters" });
+  }
 });
 
 function clearMovement() {

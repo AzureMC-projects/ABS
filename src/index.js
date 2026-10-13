@@ -2,6 +2,7 @@ const express = require("express");
 const mineflayer = require("mineflayer");
 const { createConfig, validateConfig } = require("./config");
 const { calculateReconnectDelay, chooseMovement } = require("./reliability");
+const { loadPlugins } = require("./plugins");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -18,6 +19,9 @@ let lastEvent = "starting";
 const startedAt = Date.now();
 
 const config = createConfig();
+const plugins = loadPlugins(config.pluginNames, (event, details = {}) => {
+  console.log("[ABS plugin]", JSON.stringify({ event, ...details }));
+});
 
 function log(level, event, details = {}) {
   const entry = {
@@ -34,6 +38,16 @@ function log(level, event, details = {}) {
   }
 
   lastEvent = event;
+  for (const plugin of plugins) {
+    try {
+      plugin.onEvent?.({ event, level, details, timestamp: entry.timestamp });
+    } catch (error) {
+      console.error("[ABS] plugin_event_failed", JSON.stringify({
+        plugin: plugin.name || "unknown",
+        message: error.message
+      }));
+    }
+  }
 }
 
 function uptimeSeconds() {

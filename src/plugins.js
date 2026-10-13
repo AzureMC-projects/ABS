@@ -12,7 +12,11 @@ function loadPlugins(names = [], report = () => {}) {
     try {
       const pluginPath = path.join(__dirname, "plugins", name);
       const plugin = require(pluginPath);
-      if (!plugin || typeof plugin !== "object" || (plugin.onEvent !== undefined && typeof plugin.onEvent !== "function")) {
+      if (
+        !plugin ||
+        typeof plugin !== "object" ||
+        (plugin.onEvent !== undefined && typeof plugin.onEvent !== "function")
+      ) {
         report("plugin_rejected", { name, reason: "invalid_interface" });
         continue;
       }

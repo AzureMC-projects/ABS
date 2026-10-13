@@ -24,6 +24,7 @@ const startedAt = Date.now();
 const config = createConfig();
 const remoteConfigStore = createRemoteConfigStore();
 const controlToken = process.env.ABS_CONTROL_TOKEN || "";
+const pluginToken = process.env.ABS_PLUGIN_TOKEN || "";
 const allowedControlOrigin = process.env.ABS_CONTROL_ORIGIN || "https://azuremc-projects.github.io";
 const plugins = loadPlugins(config.pluginNames, (event, details = {}) => {
   console.log("[ABS plugin]", JSON.stringify({ event, ...details }));
@@ -79,14 +80,30 @@ function controlCors(req, res, next) {
   next();
 }
 
+function bearerToken(req) {
+  const match = (req.get("Authorization") || "").match(/^Bearer (.+)$/i);
+  return match ? match[1] : "";
+}
+
+function requireReadToken(req, res, next) {
+  if (controlToken.length < 32 && pluginToken.length < 32) {
+    return res.status(503).json({ error: "Remote configuration is disabled. Configure ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN with at least 32 characters each." });
+  }
+  const candidate = bearerToken(req);
+  const isControl = safeTokenEquals(candidate, controlToken);
+  const isPlugin = safeTokenEquals(candidate, pluginToken);
+  if (!isControl && !isPlugin) {
+    return res.status(401).json({ error: "A valid read token is required." });
+  }
+  next();
+}
+
 function requireControlToken(req, res, next) {
   if (controlToken.length < 32) {
-    return res.status(503).json({ error: "Remote configuration is disabled. Configure ABS_CONTROL_TOKEN with at least 32 characters." });
+    return res.status(503).json({ error: "Remote writes are disabled. Configure ABS_CONTROL_TOKEN with at least 32 characters." });
   }
-  const authorization = req.get("Authorization") || "";
-  const match = authorization.match(/^Bearer (.+)$/i);
-  if (!match || !safeTokenEquals(match[1], controlToken)) {
-    return res.status(401).json({ error: "A valid Bearer token is required." });
+  if (!safeTokenEquals(bearerToken(req), controlToken)) {
+    return res.status(401).json({ error: "An operator Bearer token is required for writes." });
   }
   next();
 }
@@ -99,7 +116,7 @@ function applyRemoteBotSettings(remoteConfig) {
 }
 
 app.options("/api/v1/config", controlCors);
-app.get("/api/v1/config", controlCors, requireControlToken, (_req, res) => {
+app.get("/api/v1/config", controlCors, requireReadToken, (_req, res) => {
   res.set("Cache-Control", "no-store");
   res.json(remoteConfigStore.get());
 });
@@ -136,7 +153,7 @@ function getStatus() {
     reconnects: reconnectCount,
     lastConnectedAt,
     lastEvent,
-    remoteConfigEnabled: controlToken.length >= 32
+    remoteConfigEnabled: controlToken.length >= 32 && pluginToken.length >= 32
   };
 }
 
@@ -210,8 +227,8 @@ app.get("/health", (_req, res) => {
 
 app.listen(PORT, () => {
   log("info", "web_service_started", { port: PORT });
-  if (controlToken.length < 32) {
-    log("warn", "remote_config_disabled", { reason: "ABS_CONTROL_TOKEN must contain at least 32 characters" });
+  if (controlToken.length < 32 || pluginToken.length < 32) {
+    log("warn", "remote_config_disabled", { reason: "ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN must each contain at least 32 characters" });
   }
 });
 

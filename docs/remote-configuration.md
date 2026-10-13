@@ -14,7 +14,8 @@ Set these environment variables on the ABS Node service:
 
 | Variable | Required | Description |
 |---|---|---|
-| `ABS_CONTROL_TOKEN` | Yes for panel reads and writes | Operator secret, at least 32 random characters |\n| `ABS_PLUGIN_TOKEN` | Yes for Paper sync | Separate read-only secret, at least 32 random characters |
+| `ABS_CONTROL_TOKEN` | Yes for panel reads and writes | Operator secret, at least 32 random characters |
+| `ABS_PLUGIN_TOKEN` | Yes for Paper sync | Separate read-only secret, at least 32 random characters |
 | `ABS_CONTROL_ORIGIN` | No | Exact browser origin allowed to call the API; defaults to `https://azuremc-projects.github.io` |
 | `ABS_CONFIG_PATH` | No | JSON configuration file path; defaults to `data/remote-config.json` |
 

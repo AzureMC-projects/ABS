@@ -34,6 +34,7 @@ jobs:
           npm test
           npm run lint
           npm run format:check
+          (cd paper-skin-plugin && mvn --batch-mode --no-transfer-progress test package)
       - name: Resolve release tag
         id: release
         shell: bash

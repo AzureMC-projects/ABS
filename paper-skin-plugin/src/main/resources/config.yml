@@ -9,7 +9,7 @@ api:
 # and when the remote configuration changes.
 skin:
   apply-on-join: true
-  username: "ABS-Bot"
+  username: "ABS_Bot"
   enabled: false
   texture-url: ""
   model: "classic"

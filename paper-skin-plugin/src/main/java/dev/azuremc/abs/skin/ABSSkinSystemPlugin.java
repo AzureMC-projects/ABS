@@ -2,8 +2,8 @@ package dev.azuremc.abs.skin;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import io.papermc.paper.profile.PlayerProfile;
-import io.papermc.paper.profile.PlayerTextures;
+import org.bukkit.profile.PlayerProfile;
+import org.bukkit.profile.PlayerTextures;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -11,8 +11,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -109,24 +107,20 @@ public final class ABSSkinSystemPlugin extends JavaPlugin {
         }
         if (!settings.enabled()) return;
 
-        CompletableFuture.runAsync(() -> {
-            try {
-                PlayerProfile profile = Bukkit.createProfile(player.getUniqueId(), player.getName());
-                PlayerTextures textures = profile.getTextures();
-                URL texture = settings.textureUri().toURL();
-                textures.setSkin(texture, settings.isSlim() ? PlayerTextures.SkinModel.SLIM : PlayerTextures.SkinModel.CLASSIC);
-                profile.setTextures(textures);
-                Bukkit.getScheduler().runTask(this, () -> {
-                    Player current = Bukkit.getPlayer(player.getUniqueId());
-                    if (current != null && current.isOnline() && settings.username().equalsIgnoreCase(current.getName())) {
-                        current.setPlayerProfile(profile);
-                        getLogger().info("Applied configured skin to " + current.getName() + ".");
-                    }
-                });
-            } catch (Exception error) {
-                getLogger().warning("Could not apply skin to " + player.getName() + ": " + error.getMessage());
+        try {
+            PlayerProfile profile = Bukkit.createPlayerProfile(player.getUniqueId(), player.getName());
+            PlayerTextures textures = profile.getTextures();
+            URL texture = settings.textureUri().toURL();
+            textures.setSkin(texture, settings.isSlim() ? PlayerTextures.SkinModel.SLIM : PlayerTextures.SkinModel.CLASSIC);
+            profile.setTextures(textures);
+            Player current = Bukkit.getPlayer(player.getUniqueId());
+            if (current != null && current.isOnline() && settings.username().equalsIgnoreCase(current.getName())) {
+                current.setPlayerProfile(profile);
+                getLogger().info("Applied configured skin to " + current.getName() + ".");
             }
-        });
+        } catch (Exception error) {
+            getLogger().warning("Could not apply skin to " + player.getName() + ": " + error.getMessage());
+        }
     }
 
     @Override

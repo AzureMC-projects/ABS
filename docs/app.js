@@ -11,9 +11,8 @@ const saveStatus=document.querySelector("#saveStatus");
 const movementMode=document.querySelector("#movementMode");
 const jumpChance=document.querySelector("#jumpChance");
 const walkInterval=document.querySelector("#walkInterval");
-let connected=false;
 
-function normalizedApiUrl(){return apiUrl.value.trim().replace(/\\/+$/,"")}
+function normalizedApiUrl(){return apiUrl.value.trim().replace(/\/+$/,"")}
 function remotePayload(){
   return {
     skin:{
@@ -53,7 +52,7 @@ function render(){
   const url=skinUrl.value.trim();
   preview.replaceChildren();
   if(!url){preview.textContent="No skin selected";return}
-  if(!/^https:\\/\\/textures\\.minecraft\\.net\\/texture\\/[a-fA-F0-9]+$/.test(url)){
+  if(!/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]+$/.test(url)){
     preview.textContent="Use a textures.minecraft.net texture URL.";
     return;
   }
@@ -91,18 +90,18 @@ document.querySelector("#connect").addEventListener("click",async()=>{
   connectionStatus.textContent="Connecting…";
   try{
     const data=await apiRequest("GET");
-    setForm(data);connected=true;
+    setForm(data);
     connectionStatus.textContent="Connected · revision "+data.revision;
-  }catch(error){connected=false;connectionStatus.textContent="Connection failed: "+error.message}
+  }catch(error){connectionStatus.textContent="Connection failed: "+error.message}
 });
 document.querySelector("#disconnect").addEventListener("click",()=>{
-  apiToken.value="";connected=false;
+  apiToken.value="";
   connectionStatus.textContent="Disconnected; token cleared from this page.";
   saveStatus.textContent="";
 });
 document.querySelector("#loadRemote").addEventListener("click",async()=>{
   saveStatus.textContent="Loading…";
-  try{const data=await apiRequest("GET");setForm(data);connected=true;saveStatus.textContent="Loaded revision "+data.revision+"."}
+  try{const data=await apiRequest("GET");setForm(data);saveStatus.textContent="Loaded revision "+data.revision+"."}
   catch(error){saveStatus.textContent="Load failed: "+error.message}
 });
 document.querySelector("#saveRemote").addEventListener("click",async()=>{
@@ -110,10 +109,10 @@ document.querySelector("#saveRemote").addEventListener("click",async()=>{
   try{
     const payload=remotePayload();
     if(!/^[A-Za-z0-9_]{1,16}$/.test(payload.skin.username))throw new Error("Enter a valid Minecraft username.");
-    if(payload.skin.enabled&&!/^https:\\/\\/textures\\.minecraft\\.net\\/texture\\/[a-fA-F0-9]+$/.test(payload.skin.textureUrl))throw new Error("Enter a valid textures.minecraft.net texture URL.");
+    if(payload.skin.enabled&&!/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]+$/.test(payload.skin.textureUrl))throw new Error("Enter a valid textures.minecraft.net texture URL.");
     if(!Number.isFinite(payload.bot.jumpChance)||payload.bot.jumpChance<0||payload.bot.jumpChance>1)throw new Error("Jump chance must be between 0 and 1.");
     if(!Number.isInteger(payload.bot.walkIntervalMs)||payload.bot.walkIntervalMs<100||payload.bot.walkIntervalMs>60000)throw new Error("Movement interval must be 100–60000 ms.");
-    const data=await apiRequest("PUT",payload);connected=true;
+    const data=await apiRequest("PUT",payload);
     saveStatus.textContent="Saved securely · revision "+data.revision;
   }catch(error){saveStatus.textContent="Save failed: "+error.message}
 });

@@ -31,8 +31,8 @@ The API writes configuration atomically to `ABS_CONFIG_PATH`. Many free hosting 
 Build the plugin:
 
 ```bash
-cd paper-skin-plugin
-mvn test package
+cd plugins/ABS-Skins
+gradle test build
 ```
 
 Copy `target/abs-skin-system-0.1.0-SNAPSHOT.jar` into the Paper server's `plugins/` directory and restart. Edit `plugins/ABSSkinSystem/config.yml`:

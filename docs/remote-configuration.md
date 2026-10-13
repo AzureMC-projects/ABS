@@ -4,7 +4,7 @@
 
 - **ABS Node service** hosts the authenticated configuration API at `/api/v1/config`.
 - **ABS Control Panel** (GitHub Pages) reads and writes the API using HTTPS and a Bearer token entered by the operator. The browser keeps the token in page memory only.
-- **ABSSkinSystem** is a Paper plugin that polls the API on a background scheduler, validates each new configuration revision, and applies the selected skin to a matching online player.
+- **ABS-Skins** is the existing Paper 26.3 plugin that polls the API on a background scheduler, validates each new configuration revision, and applies the selected skin to a matching online player.
 
 The API configuration currently supports a skin target, texture URL and model, plus bot movement mode, jump probability, and movement interval. Skin texture URLs must use `https://textures.minecraft.net/texture/<hex-hash>`.
 
@@ -35,14 +35,14 @@ cd plugins/ABS-Skins
 gradle test build
 ```
 
-Copy `target/abs-skin-system-0.1.0-SNAPSHOT.jar` into the Paper server's `plugins/` directory and restart. Edit `plugins/ABSSkinSystem/config.yml`:
+Copy `build/libs/abs-skins-0.1.0-SNAPSHOT.jar` into the Paper server's `plugins/` directory and restart. Edit `plugins/ABS-Skins/config.yml`:
 
 - `api.base-url`: HTTPS origin of the ABS service, without `/api/v1/config`.
 - `api.token`: the same secret as `ABS_CONTROL_TOKEN`.
 - `api.poll-seconds`: polling interval (minimum 10 seconds).
 - `skin.*`: local fallback settings if remote sync is not configured.
 
-The Paper plugin's HTTP polling is asynchronous; Bukkit profile/player modifications are scheduled on the server thread. Only the configured matching username is affected. Player skin caching varies by client/server; reconnecting may be required for a client to refresh.
+The ABS-Skins plugin's HTTP polling is asynchronous; Bukkit profile/player modifications are scheduled on the server thread. Only the configured matching username is affected. Player skin caching varies by client/server; reconnecting may be required for a client to refresh.
 
 ## 4. Use the Control Panel
 

@@ -225,7 +225,7 @@ function clearMovement() {
     for (const control of ["forward", "back", "left", "right", "jump", "sprint"]) {
       try {
         bot.setControlState(control, false);
-      } catch (_) {}
+      } catch {}
     }
   }
 }
@@ -246,7 +246,7 @@ function startWalking() {
       setTimeout(() => {
         try {
           bot?.setControlState("jump", false);
-        } catch (_) {}
+        } catch {}
       }, 250);
     }
   }, config.walkIntervalMs);
@@ -284,7 +284,7 @@ function connect() {
     try {
       bot.removeAllListeners();
       bot.quit("reconnecting");
-    } catch (_) {}
+    } catch {}
     bot = null;
   }
 
@@ -368,7 +368,7 @@ function shutdown(signal) {
 
   try {
     bot?.quit("service stopping");
-  } catch (_) {}
+  } catch {}
 
   process.exit(0);
 }

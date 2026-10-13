@@ -25,6 +25,7 @@ const config = createConfig();
 const remoteConfigStore = createRemoteConfigStore();
 const controlToken = process.env.ABS_CONTROL_TOKEN || "";
 const pluginToken = process.env.ABS_PLUGIN_TOKEN || "";
+const remoteAuthConfigured = controlToken.length >= 32 && pluginToken.length >= 32 && controlToken !== pluginToken;
 const allowedControlOrigin = process.env.ABS_CONTROL_ORIGIN || "https://azuremc-projects.github.io";
 const plugins = loadPlugins(config.pluginNames, (event, details = {}) => {
   console.log("[ABS plugin]", JSON.stringify({ event, ...details }));
@@ -153,7 +154,7 @@ function getStatus() {
     reconnects: reconnectCount,
     lastConnectedAt,
     lastEvent,
-    remoteConfigEnabled: controlToken.length >= 32 && pluginToken.length >= 32
+    remoteConfigEnabled: remoteAuthConfigured
   };
 }
 

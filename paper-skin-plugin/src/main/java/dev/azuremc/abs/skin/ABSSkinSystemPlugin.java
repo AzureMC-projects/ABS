@@ -2,7 +2,7 @@ package dev.azuremc.abs.skin;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.bukkit.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import java.net.URI;
 import java.net.URL;
@@ -113,7 +113,7 @@ public final class ABSSkinSystemPlugin extends JavaPlugin {
 
         try {
             originalProfiles.putIfAbsent(player.getUniqueId(), player.getPlayerProfile());
-            PlayerProfile profile = Bukkit.createProfile(player.getUniqueId(), player.getName());
+            PlayerProfile profile = player.getPlayerProfile();
             PlayerTextures textures = profile.getTextures();
             URL texture = settings.textureUri().toURL();
             textures.setSkin(texture, settings.isSlim() ? PlayerTextures.SkinModel.SLIM : PlayerTextures.SkinModel.CLASSIC);

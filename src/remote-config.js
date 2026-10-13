@@ -35,7 +35,7 @@ function validateRemoteConfig(input) {
   if (typeof skin.username !== "string" || !/^[A-Za-z0-9_]{1,16}$/.test(skin.username)) {
     return { valid: false, error: "skin.username must be a Minecraft username (1-16 letters, digits, or underscores)." };
   }
-  if (typeof skin.textureUrl !== "string" || (skin.textureUrl && !/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]+$/.test(skin.textureUrl))) {
+  if (typeof skin.textureUrl !== "string" || (skin.textureUrl && !/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]{64}$/.test(skin.textureUrl))) {
     return { valid: false, error: "skin.textureUrl must be a textures.minecraft.net texture URL." };
   }
   if (skin.enabled && !skin.textureUrl) {

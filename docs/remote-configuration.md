@@ -14,13 +14,13 @@ Set these environment variables on the ABS Node service:
 
 | Variable | Required | Description |
 |---|---|---|
-| `ABS_CONTROL_TOKEN` | Yes for remote config | Unique random secret, at least 32 characters |
+| `ABS_CONTROL_TOKEN` | Yes for panel reads and writes | Operator secret, at least 32 random characters |\n| `ABS_PLUGIN_TOKEN` | Yes for Paper sync | Separate read-only secret, at least 32 random characters |
 | `ABS_CONTROL_ORIGIN` | No | Exact browser origin allowed to call the API; defaults to `https://azuremc-projects.github.io` |
 | `ABS_CONFIG_PATH` | No | JSON configuration file path; defaults to `data/remote-config.json` |
 
-Generate a strong token locally, for example with `openssl rand -hex 32`. Add it to the hosting provider's secret/environment settings, not to Git. Use the same token in the Paper plugin's server-local config and enter it in the control panel when connecting. Rotate it if it is exposed.
+Generate two separate strong tokens, for example by running `openssl rand -hex 32` twice. Store both as hosting-provider secrets, never in Git. Enter `ABS_CONTROL_TOKEN` in the Control Panel; set `ABS_PLUGIN_TOKEN` in the Paper plugin's local config. The plugin token can read configuration but cannot update it. Rotate either token if exposed.
 
-The API refuses to enable remote configuration if the token is missing or shorter than 32 characters. It checks Bearer credentials with a constant-time comparison, validates all updates, limits request bodies, and rejects browser origins other than the configured origin. Deploy behind HTTPS. CORS is a browser boundary, not a replacement for authentication.
+The API disables writes unless `ABS_CONTROL_TOKEN` is at least 32 characters and allows read access only to the operator token or the separate `ABS_PLUGIN_TOKEN`. The Paper plugin should use only the read-only token. It checks Bearer credentials with a constant-time comparison, validates all updates, limits request bodies, and rejects browser origins other than the configured origin. Deploy behind HTTPS. CORS is a browser boundary, not a replacement for authentication.
 
 ## 2. Persistent storage
 
@@ -38,7 +38,7 @@ gradle test build
 Copy `build/libs/abs-skins-0.1.0-SNAPSHOT.jar` into the Paper server's `plugins/` directory and restart. Edit `plugins/ABS-Skins/config.yml`:
 
 - `api.base-url`: HTTPS origin of the ABS service, without `/api/v1/config`.
-- `api.token`: the same secret as `ABS_CONTROL_TOKEN`.
+- `api.token`: the read-only secret `ABS_PLUGIN_TOKEN`, not `ABS_CONTROL_TOKEN`.
 - `api.poll-seconds`: polling interval (minimum 10 seconds).
 - `skin.*`: local fallback settings if remote sync is not configured.
 

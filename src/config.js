@@ -11,7 +11,8 @@ function createConfig(env = process.env) {
     reconnectJitter: Number(env.RECONNECT_JITTER ?? 0.2),
     walkIntervalMs: Number(env.WALK_INTERVAL_MS || 1000),
     movementMode: (env.MOVEMENT_MODE || "forward").toLowerCase(),
-    jumpChance: Number(env.JUMP_CHANCE ?? 0.12)
+    jumpChance: Number(env.JUMP_CHANCE ?? 0.12),
+    pluginNames: (env.ABS_PLUGINS || "").split(",").map((name) => name.trim()).filter(Boolean)
   };
 }
 
@@ -48,6 +49,12 @@ function validateConfig(config) {
 
   if (!["forward", "random", "idle"].includes(config.movementMode)) {
     return { valid: false, error: "MOVEMENT_MODE must be one of: forward, random, idle." };
+  }
+
+  for (const name of config.pluginNames) {
+    if (!/^[a-z][a-z0-9-]{0,39}$/.test(name)) {
+      return { valid: false, error: `Invalid ABS_PLUGINS entry: ${name}` };
+    }
   }
 
   return { valid: true };

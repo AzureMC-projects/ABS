@@ -4,7 +4,7 @@ main: com.azuremc.abs.skins.AbsSkinsPlugin
 description: Server-side skin customization for the ABS Minecraft bot.
 author: AzureMC-projects
 website: https://github.com/AzureMC-projects/ABS
-api-version: '26.2'
+api-version: '26.3'
 
 commands:
   abs-skin:

@@ -12,7 +12,10 @@ function createConfig(env = process.env) {
     walkIntervalMs: Number(env.WALK_INTERVAL_MS || 1000),
     movementMode: (env.MOVEMENT_MODE || "forward").toLowerCase(),
     jumpChance: Number(env.JUMP_CHANCE ?? 0.12),
-    pluginNames: (env.ABS_PLUGINS || "").split(",").map((name) => name.trim()).filter(Boolean)
+    pluginNames: (env.ABS_PLUGINS || "")
+      .split(",")
+      .map((name) => name.trim())
+      .filter(Boolean)
   };
 }
 

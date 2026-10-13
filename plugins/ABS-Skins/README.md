@@ -31,6 +31,6 @@ The plugin validates the username, texture host, and model. Use `/abs-skin reloa
 
 ## Remote configuration
 
-Set `api.base-url` to the HTTPS origin of the ABS Node service and `api.token` to the same high-entropy secret as `ABS_CONTROL_TOKEN` on that service. The token must be at least 32 characters. The plugin polls `GET /api/v1/config` on a background scheduler, validates each new revision, and applies settings to the matching online player. Remote skin updates are applied on the server thread.
+Set `api.base-url` to the HTTPS origin of the ABS Node service and `api.token` to the separate read-only secret `ABS_PLUGIN_TOKEN` on that service. Use `ABS_CONTROL_TOKEN` only in the Control Panel; it has write privileges. Both secrets must be at least 32 characters and should be generated independently. The plugin polls `GET /api/v1/config` on a background scheduler, validates each new revision, and applies settings to the matching online player. Remote skin updates are applied on the server thread.
 
 See [Remote Configuration and Security](../../docs/remote-configuration.md) for API setup, GitHub Pages Control Panel use, persistent storage requirements, and security limitations. Never commit the token or include it in bug reports.

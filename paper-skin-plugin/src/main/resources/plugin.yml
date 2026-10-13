@@ -1,0 +1,6 @@
+name: ABSSkinSystem
+version: 0.1.0
+main: dev.azuremc.abs.skin.ABSSkinSystemPlugin
+api-version: '1.21'
+author: AzureMC-projects
+description: Applies configured skins to ABS bot players and syncs with the ABS API.

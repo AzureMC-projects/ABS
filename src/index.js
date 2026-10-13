@@ -87,8 +87,8 @@ function bearerToken(req) {
 }
 
 function requireReadToken(req, res, next) {
-  if (controlToken.length < 32 && pluginToken.length < 32) {
-    return res.status(503).json({ error: "Remote configuration is disabled. Configure ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN with at least 32 characters each." });
+  if (!remoteAuthConfigured) {
+    return res.status(503).json({ error: "Remote configuration requires distinct ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN secrets, each at least 32 characters." });
   }
   const candidate = bearerToken(req);
   const isControl = safeTokenEquals(candidate, controlToken);
@@ -100,8 +100,8 @@ function requireReadToken(req, res, next) {
 }
 
 function requireControlToken(req, res, next) {
-  if (controlToken.length < 32) {
-    return res.status(503).json({ error: "Remote writes are disabled. Configure ABS_CONTROL_TOKEN with at least 32 characters." });
+  if (!remoteAuthConfigured) {
+    return res.status(503).json({ error: "Remote writes require distinct ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN secrets, each at least 32 characters." });
   }
   if (!safeTokenEquals(bearerToken(req), controlToken)) {
     return res.status(401).json({ error: "An operator Bearer token is required for writes." });
@@ -228,8 +228,8 @@ app.get("/health", (_req, res) => {
 
 app.listen(PORT, () => {
   log("info", "web_service_started", { port: PORT });
-  if (controlToken.length < 32 || pluginToken.length < 32) {
-    log("warn", "remote_config_disabled", { reason: "ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN must each contain at least 32 characters" });
+  if (!remoteAuthConfigured) {
+    log("warn", "remote_config_disabled", { reason: "ABS_CONTROL_TOKEN and ABS_PLUGIN_TOKEN must be distinct and each contain at least 32 characters" });
   }
 });
 

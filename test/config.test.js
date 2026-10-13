@@ -66,12 +66,20 @@ test("rejects invalid numeric settings", () => {
   assert.match(result.error, /MC_PORT/);
 });
 
-
 test("rejects invalid movement mode and probability values", () => {
   const base = { MC_HOST: "example.com", MC_USERNAME: "ABS-Bot" };
-  assert.match(validateConfig(createConfig({ ...base, MOVEMENT_MODE: "teleport" })).error, /MOVEMENT_MODE/);
-  assert.match(validateConfig(createConfig({ ...base, JUMP_CHANCE: "2" })).error, /JUMP_CHANCE/);
-  assert.match(validateConfig(createConfig({ ...base, RECONNECT_JITTER: "-0.1" })).error, /RECONNECT_JITTER/);
+  assert.match(
+    validateConfig(createConfig({ ...base, MOVEMENT_MODE: "teleport" })).error,
+    /MOVEMENT_MODE/
+  );
+  assert.match(
+    validateConfig(createConfig({ ...base, JUMP_CHANCE: "2" })).error,
+    /JUMP_CHANCE/
+  );
+  assert.match(
+    validateConfig(createConfig({ ...base, RECONNECT_JITTER: "-0.1" })).error,
+    /RECONNECT_JITTER/
+  );
 });
 
 test("allows a random movement mode regardless of case", () => {

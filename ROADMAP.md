@@ -31,6 +31,6 @@ ABS is primarily developed and tested for **Paper 26.3**. Other Minecraft server
 - [ ] Multi-user RBAC, separate panel/plugin credentials, and managed persistent storage
 
 ### Project and release tooling
-- [ ] Release automation
+- [x] Tag-driven GitHub Release automation
 
 Roadmap items are plans, not guarantees. Compatibility reports and community contributions are welcome through GitHub Issues.

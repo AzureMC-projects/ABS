@@ -52,7 +52,7 @@ function render(){
   const url=skinUrl.value.trim();
   preview.replaceChildren();
   if(!url){preview.textContent="No skin selected";return}
-  if(!/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]+$/.test(url)){
+  if(!/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]{64}$/.test(url)){
     preview.textContent="Use a textures.minecraft.net texture URL.";
     return;
   }
@@ -109,7 +109,7 @@ document.querySelector("#saveRemote").addEventListener("click",async()=>{
   try{
     const payload=remotePayload();
     if(!/^[A-Za-z0-9_]{1,16}$/.test(payload.skin.username))throw new Error("Enter a valid Minecraft username.");
-    if(payload.skin.enabled&&!/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]+$/.test(payload.skin.textureUrl))throw new Error("Enter a valid textures.minecraft.net texture URL.");
+    if(payload.skin.enabled&&!/^https:\/\/textures\.minecraft\.net\/texture\/[a-fA-F0-9]{64}$/.test(payload.skin.textureUrl))throw new Error("Enter a valid textures.minecraft.net texture URL.");
     if(!Number.isFinite(payload.bot.jumpChance)||payload.bot.jumpChance<0||payload.bot.jumpChance>1)throw new Error("Jump chance must be between 0 and 1.");
     if(!Number.isInteger(payload.bot.walkIntervalMs)||payload.bot.walkIntervalMs<100||payload.bot.walkIntervalMs>60000)throw new Error("Movement interval must be 100–60000 ms.");
     const data=await apiRequest("PUT",payload);

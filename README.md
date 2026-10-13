@@ -130,7 +130,7 @@ GET /health
 
 ## Control Panel and Paper Skin System
 
-See [Remote Configuration and Skin System](docs/remote-configuration.md) for setup instructions, security requirements, and Paper plugin build steps. Remote configuration is disabled unless `ABS_CONTROL_TOKEN` is set to a high-entropy value of at least 32 characters.
+See [Remote Configuration and Skin System](docs/remote-configuration.md) for setup instructions, security requirements, and Paper plugin build steps. Remote writes require `ABS_CONTROL_TOKEN`; Paper sync uses a separate read-only `ABS_PLUGIN_TOKEN`. Both must be high-entropy secrets of at least 32 characters.
 
 ## How ABS works
 

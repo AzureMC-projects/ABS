@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 class SkinSettingsTest {
     @Test
     void acceptsValidClassicSkin() {
-        SkinSettings settings = new SkinSettings(true, "ABS_Bot", "https://textures.minecraft.net/texture/abcdef012345", "classic");
+        SkinSettings settings = new SkinSettings(true, "ABS_Bot", "https://textures.minecraft.net/texture/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "classic");
         assertNull(settings.validationError());
         assertEquals(false, settings.isSlim());
     }
 
     @Test
     void acceptsSlimSkin() {
-        SkinSettings settings = new SkinSettings(true, "ABS_Bot", "https://textures.minecraft.net/texture/abcdef012345", "slim");
+        SkinSettings settings = new SkinSettings(true, "ABS_Bot", "https://textures.minecraft.net/texture/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "slim");
         assertNull(settings.validationError());
         assertEquals(true, settings.isSlim());
     }

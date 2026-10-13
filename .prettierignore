@@ -16,7 +16,6 @@ docs/troubleshooting.html
 docs/tutorial.html
 docs/wiki/Configuration.md
 eslint.config.js
-paper-skin-plugin/src/main/resources/plugin.yml
 plugins/ABS-Skins/src/main/resources/plugin.yml
 README.md
 ROADMAP.md

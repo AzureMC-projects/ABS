@@ -6,7 +6,7 @@ const DEFAULT_REMOTE_CONFIG = Object.freeze({
   updatedAt: null,
   skin: {
     enabled: false,
-    username: "ABS-Bot",
+    username: "ABS_Bot",
     textureUrl: "",
     model: "classic"
   },

@@ -24,10 +24,11 @@ import org.bukkit.profile.PlayerTextures;
 public final class AbsSkinsPlugin extends JavaPlugin implements Listener {
     private final Map<UUID, PlayerProfile> originalProfiles = new ConcurrentHashMap<>();
     private HttpClient httpClient;
-    private String apiBaseUrl = "";
-    private String apiToken = "";
-    private SkinSettings activeSkin;
-    private long lastRevision = -1;
+    private volatile String apiBaseUrl = "";
+    private volatile String apiToken = "";
+    private volatile SkinSettings activeSkin;
+    private volatile long lastRevision = -1;
+    private final AtomicBoolean pollInFlight = new AtomicBoolean(false);
     private int pollTaskId = -1;
 
     @Override
@@ -107,6 +108,7 @@ public final class AbsSkinsPlugin extends JavaPlugin implements Listener {
     }
 
     private void pollRemoteConfig() {
+        if (!pollInFlight.compareAndSet(false, true)) return;
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(apiBaseUrl + "/api/v1/config"))
                 .timeout(Duration.ofSeconds(10))
@@ -150,6 +152,8 @@ public final class AbsSkinsPlugin extends JavaPlugin implements Listener {
             getLogger().info("Applied ABS remote configuration revision " + revision + ".");
         } catch (Exception error) {
             getLogger().warning("ABS API sync failed: " + error.getClass().getSimpleName() + ": " + error.getMessage());
+        } finally {
+            pollInFlight.set(false);
         }
     }
 

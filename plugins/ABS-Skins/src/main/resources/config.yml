@@ -1,7 +1,12 @@
 bot:
-  name: ABS-Bot
+  name: ABS_Bot
 
 skin:
   enabled: false
   texture: ""
   model: classic
+
+api:
+  base-url: ""
+  token: ""
+  poll-seconds: 30

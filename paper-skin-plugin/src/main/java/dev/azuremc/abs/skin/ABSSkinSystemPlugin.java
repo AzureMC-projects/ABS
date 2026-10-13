@@ -11,6 +11,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +24,7 @@ public final class ABSSkinSystemPlugin extends JavaPlugin {
     private String apiToken;
     private SkinSettings activeSkin;
     private long lastRevision = -1;
+    private final Map<UUID, PlayerProfile> originalProfiles = new ConcurrentHashMap<>();
 
     @Override
     public void onEnable() {
@@ -88,9 +92,9 @@ public final class ABSSkinSystemPlugin extends JavaPlugin {
             lastRevision = revision;
             Bukkit.getScheduler().runTask(this, () -> {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (candidate.username().equalsIgnoreCase(player.getName()) && candidate.enabled()) {
-                        applySkin(player, candidate);
-                    }
+                    if (!candidate.username().equalsIgnoreCase(player.getName())) continue;
+                    if (candidate.enabled()) applySkin(player, candidate);
+                    else restoreSkin(player);
                 }
             });
             getLogger().info("Applied ABS remote configuration revision " + revision + ".");
@@ -108,7 +112,8 @@ public final class ABSSkinSystemPlugin extends JavaPlugin {
         if (!settings.enabled()) return;
 
         try {
-            PlayerProfile profile = Bukkit.createPlayerProfile(player.getUniqueId(), player.getName());
+            originalProfiles.putIfAbsent(player.getUniqueId(), player.getPlayerProfile());
+            PlayerProfile profile = Bukkit.createProfile(player.getUniqueId(), player.getName());
             PlayerTextures textures = profile.getTextures();
             URL texture = settings.textureUri().toURL();
             textures.setSkin(texture, settings.isSlim() ? PlayerTextures.SkinModel.SLIM : PlayerTextures.SkinModel.CLASSIC);
@@ -120,6 +125,15 @@ public final class ABSSkinSystemPlugin extends JavaPlugin {
             }
         } catch (Exception error) {
             getLogger().warning("Could not apply skin to " + player.getName() + ": " + error.getMessage());
+        }
+    }
+
+
+    private void restoreSkin(Player player) {
+        PlayerProfile original = originalProfiles.get(player.getUniqueId());
+        if (original != null && player.isOnline()) {
+            player.setPlayerProfile(original);
+            getLogger().info("Restored original skin for " + player.getName() + ".");
         }
     }
 

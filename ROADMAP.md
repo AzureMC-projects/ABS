@@ -23,7 +23,7 @@ ABS is primarily developed and tested for **Paper 26.3**. Other Minecraft server
 
 ### Reliability and compatibility
 - [ ] Broader server compatibility testing against a real server matrix
-- [ ] Optional runtime plugin hooks and documented plugin API
+- [x] Initial opt-in runtime event plugin hooks and documented plugin API
 
 ### Customization and control
 - [ ] ABS Skin System — Paper plugin for server-side bot skins

@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "check": "node --check src/index.js",
+    "check": "node --check src/index.js && node --check src/remote-config.js && node --check src/plugins.js && node --check docs/app.js",
     "test": "node --test",
     "lint": "eslint .",
     "format:check": "prettier --check ."

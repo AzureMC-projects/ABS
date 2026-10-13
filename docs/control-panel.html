@@ -3,25 +3,45 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="ABS Control Panel">
+<meta name="description" content="ABS Control Panel for secure bot skin and movement configuration">
 <title>ABS Control Panel</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <main class="shell">
-<header class="hero"><img src="assets/abs-logo.svg" alt="ABS" class="logo"><div><p class="eyebrow">AZURES BOT SERVICE</p><h1>ABS Control Panel</h1><p>Configure your bot customization and export a ready-to-use Paper configuration.</p></div></header>
+<header class="hero"><img src="assets/abs-logo.svg" alt="ABS" class="logo"><div><p class="eyebrow">AZURES BOT SERVICE</p><h1>ABS Control Panel</h1><p>Manage bot skins and movement settings through your authenticated ABS API, or export a local Paper configuration.</p></div></header>
+<section class="card">
+<h2>Secure API connection</h2>
+<p class="muted">Use your HTTPS ABS service URL and operator token. The token stays in this page's memory only; it is not saved in local storage or included in exported configuration.</p>
+<label for="apiUrl">ABS API URL</label><input id="apiUrl" type="url" placeholder="https://your-abs-service.onrender.com" autocomplete="url">
+<label for="apiToken">Operator token</label><input id="apiToken" type="password" placeholder="Paste ABS_CONTROL_TOKEN" autocomplete="off">
+<div class="actions"><button id="connect" type="button">Connect and load</button><button id="disconnect" type="button" class="secondary">Clear credentials</button></div>
+<p id="connectionStatus" role="status" aria-live="polite">Not connected</p>
+</section>
 <section class="card">
 <h2>Bot skin</h2>
-<p class="muted">This first version prepares configuration locally. Remote server changes will be added with the secure ABS configuration API.</p>
-<label for="botName">Bot username</label><input id="botName" value="ABS-Bot" autocomplete="off">
+<p class="muted">The Paper plugin applies this skin to the matching online player. Use a Minecraft texture URL, not a PNG upload URL.</p>
+<label for="botName">Bot username</label><input id="botName" value="ABS_Bot" maxlength="16" autocomplete="off">
 <label class="toggle"><input id="skinEnabled" type="checkbox"> Enable custom skin</label>
-<label for="skinUrl">Skin texture URL</label><input id="skinUrl" type="url" placeholder="https://textures.minecraft.net/texture/...">
+<label for="skinUrl">Skin texture URL</label><input id="skinUrl" type="url" placeholder="https://textures.minecraft.net/texture/..." autocomplete="off">
 <label for="skinModel">Skin model</label><select id="skinModel"><option value="classic">Classic</option><option value="slim">Slim</option></select>
 <div class="preview"><div id="skinPreview">No skin selected</div></div>
+</section>
+<section class="card">
+<h2>Bot behavior</h2>
+<label for="movementMode">Movement mode</label><select id="movementMode"><option value="forward">Forward</option><option value="random">Random directions</option><option value="idle">Idle</option></select>
+<label for="jumpChance">Jump chance (0–1)</label><input id="jumpChance" type="number" min="0" max="1" step="0.01" value="0.12">
+<label for="walkInterval">Movement interval (100–60000 ms)</label><input id="walkInterval" type="number" min="100" max="60000" step="100" value="1000">
+<div class="actions"><button id="saveRemote" type="button">Save remote settings</button><button id="loadRemote" type="button" class="secondary">Reload from API</button></div>
+<p id="saveStatus" role="status" aria-live="polite"></p>
+</section>
+<section class="card">
+<h2>Local Paper configuration export</h2>
+<p class="muted">This export is a local fallback for the Paper plugin. It never contains your API token.</p>
 <div class="actions"><button id="download" type="button">Download config.yml</button><button id="copy" type="button" class="secondary">Copy YAML</button></div>
 <pre id="output"></pre>
 </section>
-<footer><a href="https://github.com/AzureMC-projects/ABS">ABS on GitHub</a><span>•</span><span>Paper 26.3 target</span></footer>
+<footer><a href="https://github.com/AzureMC-projects/ABS">ABS on GitHub</a><span>•</span><span>Paper 1.21.4+ API target</span></footer>
 </main>
 <script src="app.js"></script>
 </body>

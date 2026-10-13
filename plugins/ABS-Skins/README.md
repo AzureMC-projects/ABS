@@ -1,35 +1,36 @@
 # ABS-Skins
 
-**ABS-Skins** is the planned server-side Paper plugin for the ABS customization system.
+**ABS-Skins** is the server-side Paper plugin for ABS bot skin customization.
 
-Its first responsibility is applying a custom skin to the ABS bot so the skin can be visible to players on the server.
+## Build
 
-## Status
+Requirements: Java 25 and Gradle 9.1+.
 
-Early development.
+```bash
+cd plugins/ABS-Skins
+gradle test build
+```
 
-## Target
+The plugin jar is created at `build/libs/abs-skins-0.1.0-SNAPSHOT.jar`. Copy it to the Paper server's `plugins/` directory and restart the server.
 
-- Paper 26.3
-- ABS bot
-- Offline-mode compatible server setup where Paper profile updates are supported
+## Local skin settings
 
-## Planned configuration
+Edit `plugins/ABS-Skins/config.yml`:
 
-    bot:
-      name: ABS-Bot
+```yaml
+bot:
+  name: ABS_Bot
 
-    skin:
-      enabled: true
-      texture: "https://textures.minecraft.net/texture/..."
-      model: classic
+skin:
+  enabled: true
+  texture: "https://textures.minecraft.net/texture/<hex-hash>"
+  model: classic
+```
 
-## Planned command
+The plugin validates the username, texture host, and model. Use `/abs-skin reload` to reload local settings.
 
-`/abs-skin reload`
+## Remote configuration
 
-## Planned control panel
+Set `api.base-url` to the HTTPS origin of the ABS Node service and `api.token` to the separate read-only secret `ABS_PLUGIN_TOKEN` on that service. Use `ABS_CONTROL_TOKEN` only in the Control Panel; it has write privileges. Both secrets must be at least 32 characters and should be generated independently. The plugin polls `GET /api/v1/config` on a background scheduler, validates each new revision, and applies settings to the matching online player. Remote skin updates are applied on the server thread.
 
-The future **ABS Control Panel** will be hosted with GitHub Pages and will make skin configuration easier for server owners. The control panel will not store or expose server credentials.
-
-See [the customization architecture](../../docs/customization.md) for the complete design and security requirements.
+See [Remote Configuration and Security](../../docs/remote-configuration.md) for API setup, GitHub Pages Control Panel use, persistent storage requirements, and security limitations. Never commit the token or include it in bug reports.

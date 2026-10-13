@@ -1,7 +1,14 @@
 bot:
-  name: ABS-Bot
+  name: ABS_Bot
 
 skin:
   enabled: false
   texture: ""
   model: classic
+
+# Remote sync is optional. Use the read-only ABS_PLUGIN_TOKEN here, never
+# ABS_CONTROL_TOKEN. Keep this file local to the Paper server.
+api:
+  base-url: ""
+  token: ""
+  poll-seconds: 30

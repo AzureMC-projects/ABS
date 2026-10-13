@@ -376,6 +376,10 @@ function shutdown(signal) {
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
+if (remoteConfigStore.get().updatedAt) {
+  applyRemoteBotSettings(remoteConfigStore.get());
+}
+
 const validation = validateConfig(config);
 
 if (!validation.valid) {

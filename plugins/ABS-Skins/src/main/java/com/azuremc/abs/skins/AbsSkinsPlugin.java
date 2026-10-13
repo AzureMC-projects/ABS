@@ -18,7 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 
 public final class AbsSkinsPlugin extends JavaPlugin implements Listener {
@@ -165,8 +165,8 @@ public final class AbsSkinsPlugin extends JavaPlugin implements Listener {
         }
         if (!settings.enabled()) return;
         try {
-            originalProfiles.putIfAbsent(player.getUniqueId(), player.getPlayerProfile());
-            PlayerProfile profile = player.getPlayerProfile();
+            originalProfiles.putIfAbsent(player.getUniqueId(), (PlayerProfile) player.getPlayerProfile());
+            PlayerProfile profile = (PlayerProfile) player.getPlayerProfile();
             PlayerTextures textures = profile.getTextures();
             URL texture = URI.create(settings.textureUrl()).toURL();
             textures.setSkin(texture, settings.isSlim() ? PlayerTextures.SkinModel.SLIM : PlayerTextures.SkinModel.CLASSIC);

@@ -26,8 +26,9 @@ ABS is primarily developed and tested for **Paper 26.3**. Other Minecraft server
 - [x] Initial opt-in runtime event plugin hooks and documented plugin API
 
 ### Customization and control
-- [ ] ABS Skin System — Paper plugin for server-side bot skins
-- [ ] Secure remote configuration bridge between the Control Panel, ABS API, and Paper plugin
+- [x] Initial ABS Skin System — Paper plugin for server-side bot skins and remote polling
+- [x] Initial authenticated remote configuration bridge between the Control Panel, ABS API, and Paper plugin
+- [ ] Multi-user RBAC, separate panel/plugin credentials, and managed persistent storage
 
 ### Project and release tooling
 - [ ] Release automation

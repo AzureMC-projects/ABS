@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public record SkinSettings(boolean enabled, String username, String textureUrl, String model) {
     private static final Pattern USERNAME = Pattern.compile("^[A-Za-z0-9_]{1,16}$");
-    private static final Pattern TEXTURE = Pattern.compile("^https://textures\\.minecraft\\.net/texture/[a-fA-F0-9]+$");
+    private static final Pattern TEXTURE = Pattern.compile("^https://textures\\.minecraft\\.net/texture/[a-fA-F0-9]{64}$");
 
     public String validationError() {
         if (username == null || !USERNAME.matcher(username).matches()) {

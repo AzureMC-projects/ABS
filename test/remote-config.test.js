@@ -13,6 +13,20 @@ test("accepts default remote config", () => {
   assert.deepEqual(validateRemoteConfig(validConfig()), { valid: true });
 });
 
+
+test("accepts a full 64-character Minecraft texture hash", () => {
+  const config = validConfig();
+  config.skin.enabled = true;
+  config.skin.textureUrl = "https://textures.minecraft.net/texture/" + "a".repeat(64);
+  assert.deepEqual(validateRemoteConfig(config), { valid: true });
+});
+
+test("rejects shortened Minecraft texture hashes", () => {
+  const config = validConfig();
+  config.skin.textureUrl = "https://textures.minecraft.net/texture/abcdef012345";
+  assert.match(validateRemoteConfig(config).error, /texture URL/);
+});
+
 test("rejects non-HTTPS and non-Minecraft texture URLs", () => {
   const config = validConfig();
   config.skin.textureUrl = "http://example.com/skin.png";

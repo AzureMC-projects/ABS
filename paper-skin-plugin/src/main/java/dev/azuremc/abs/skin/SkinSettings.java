@@ -11,7 +11,7 @@ public record SkinSettings(boolean enabled, String username, String textureUrl, 
     public static SkinSettings fromConfig(org.bukkit.configuration.ConfigurationSection section) {
         return new SkinSettings(
             section.getBoolean("enabled", false),
-            section.getString("username", "ABS-Bot"),
+            section.getString("username", "ABS_Bot"),
             section.getString("texture-url", ""),
             section.getString("model", "classic")
         );

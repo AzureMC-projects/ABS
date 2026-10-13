@@ -60,6 +60,7 @@ public final class AbsSkinsPlugin extends JavaPlugin implements Listener {
     }
 
     private void reloadSettings() {
+        lastRevision = -1;
         String username = getConfig().getString("bot.name", "ABS_Bot");
         boolean enabled = getConfig().getBoolean("skin.enabled", false);
         String texture = getConfig().getString("skin.texture", "");

@@ -1,6 +1,7 @@
 const express = require("express");
 const mineflayer = require("mineflayer");
 const { createConfig, validateConfig } = require("./config");
+const { calculateReconnectDelay, chooseMovement } = require("./reliability");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -11,6 +12,7 @@ let walkTimer = null;
 let connected = false;
 let stopping = false;
 let reconnectCount = 0;
+let consecutiveFailures = 0;
 let lastConnectedAt = null;
 let lastEvent = "starting";
 const startedAt = Date.now();
@@ -146,9 +148,12 @@ function startWalking() {
   walkTimer = setInterval(() => {
     if (!bot || !bot.entity || !connected || stopping) return;
 
-    bot.setControlState("forward", true);
+    const movement = chooseMovement(config, Math.random);
+    for (const control of ["forward", "back", "left", "right", "sprint"]) {
+      bot.setControlState(control, movement[control] === true);
+    }
 
-    if (Math.random() < 0.12) {
+    if (movement.jump) {
       bot.setControlState("jump", true);
       setTimeout(() => {
         try {
@@ -165,17 +170,20 @@ function scheduleReconnect(reason) {
   connected = false;
   clearMovement();
   reconnectCount += 1;
+  consecutiveFailures += 1;
+  const delayMs = calculateReconnectDelay(config, consecutiveFailures, Math.random);
 
   log("warn", "reconnect_scheduled", {
     reason: reason || "unknown",
-    delayMs: config.reconnectMs,
-    reconnectCount
+    delayMs,
+    reconnectCount,
+    consecutiveFailures
   });
 
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
     connect();
-  }, config.reconnectMs);
+  }, delayMs);
 }
 
 function connect() {
@@ -208,6 +216,7 @@ function connect() {
 
   bot.once("spawn", () => {
     connected = true;
+    consecutiveFailures = 0;
     lastConnectedAt = new Date().toISOString();
     log("info", "minecraft_spawned", { username: bot.username });
     startWalking();
@@ -234,6 +243,7 @@ function connect() {
     if (stopping) return;
 
     connected = true;
+    consecutiveFailures = 0;
     lastConnectedAt = new Date().toISOString();
     log("info", "bot_respawned");
     startWalking();

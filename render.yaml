@@ -18,5 +18,15 @@ services:
         value: ""
       - key: RECONNECT_MS
         value: "5000"
+      - key: RECONNECT_MAX_MS
+        value: "60000"
+      - key: RECONNECT_MULTIPLIER
+        value: "2"
+      - key: RECONNECT_JITTER
+        value: "0.2"
       - key: WALK_INTERVAL_MS
         value: "1000"
+      - key: MOVEMENT_MODE
+        value: "forward"
+      - key: JUMP_CHANCE
+        value: "0.12"
